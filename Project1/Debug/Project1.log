@@ -1,0 +1,9 @@
+﻿  main.c
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(28): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(30): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(31): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(45): warning C4098: 'main': 'void' function returning a value
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(60): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(60): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
+  Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\Debug\Project1.exe
+  Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\Debug\Project1.pdb (Partial PDB)

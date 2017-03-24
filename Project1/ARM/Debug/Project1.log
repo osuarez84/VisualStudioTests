@@ -1,0 +1,13 @@
+﻿  main.c
+..\main.c(27): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(29): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(30): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(33): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(34): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(35): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(36): warning C4305: '=': truncation from 'double' to 'float'
+..\main.c(44): warning C4098: 'main': 'void' function returning a value
+..\main.c(59): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+..\main.c(59): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
+  Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\ARM\Debug\Project1.exe
+  Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\ARM\Debug\Project1.pdb (Partial PDB)
