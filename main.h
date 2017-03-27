@@ -1,6 +1,10 @@
 #include <stdint.h>
 
 
+
+#define		NBITSDAC	12
+#define		VREF		3.3
+
 typedef struct {
 	char init_1;
 	char init_2;
