@@ -1,5 +1,6 @@
 #include "main.h"
 #include <math.h>
+#include <stdio.h>
 
 
 DF_CVTypeDef USB_DF_Rx;
@@ -17,6 +18,7 @@ uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
 void generateDACValues(float* lut, int32_t* data, uint32_t n);
 
+void printToFile(uint32_t* lut, uint32_t LUTsize);
 
 
 void main() {
@@ -46,6 +48,8 @@ void main() {
 
 	/* Inicializamos la CV con los datos del USB */
 	CV_Init(&USB_DF_Rx);
+
+
 
 
 
@@ -95,6 +99,10 @@ void CV_Init(DF_CVTypeDef* USB_DF_Rx) {
 	/* Envío de datos a la SDRAM */
 	// TODO
 
+
+
+	/* Debugging to a txt file */
+	printToFile(LUTDAC, lengthLUT);
 }
 
 
@@ -186,3 +194,25 @@ void generateDACValues(float* lut, int32_t* data, uint32_t n) {
 }
 
 
+/**
+* @brief	Prints data to txt file (debugging purposes)
+* @param	Pointer to LUT containing data
+* @param	Size of the LUT
+* @retval	None
+*/
+void printToFile(uint32_t* lut, uint32_t LUTsize) {
+
+	FILE *f = fopen("LUT.txt", "w");
+	if (f == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
+	}
+
+	for (uint32_t i = 0; i < LUTsize; i++) {
+		fprintf(f, "%d\n", lut[i]);
+	}
+
+	fclose(f);
+
+
+}
