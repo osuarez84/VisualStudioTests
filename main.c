@@ -15,7 +15,7 @@ int32_t LUTDAC[31000];					// Tabla con datos convertidos a valor DAC
 void CV_Init(DF_CVTypeDef *USB_DF_Rx);
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
-void generateDACValues(float* lut, uint32_t n);
+void generateDACValues(float* lut, int32_t* data, uint32_t n);
 
 
 
@@ -184,3 +184,5 @@ void generateDACValues(float* lut, int32_t* data, uint32_t n) {
 	}
 
 }
+
+
