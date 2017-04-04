@@ -32,11 +32,11 @@ void main() {
 	USB_DF_Rx.Pretreatment.rango = 0x01;
 	USB_DF_Rx.Pretreatment.high_gain = 0x01;
 	USB_DF_Rx.Pretreatment.cell_on = 0x01;
-	USB_DF_Rx.Pretreatment.t_cond = 342.5;
-	USB_DF_Rx.Pretreatment.e_cond = 0.003;
-	USB_DF_Rx.Pretreatment.t_dep = 23;
-	USB_DF_Rx.Pretreatment.e_dep = 0.012;
-	USB_DF_Rx.Pretreatment.t_eq = 0.23;
+	USB_DF_Rx.Pretreatment.tCond = 342.5;
+	USB_DF_Rx.Pretreatment.eCond = 0.003;
+	USB_DF_Rx.Pretreatment.tDep = 23;
+	USB_DF_Rx.Pretreatment.eDep = 0.012;
+	USB_DF_Rx.Pretreatment.tEq = 0.23;
 
 
 	USB_DF_Rx.Measurement.start = 1;
