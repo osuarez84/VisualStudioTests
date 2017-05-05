@@ -1,14 +1,17 @@
 ﻿  main.c
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(31): warning C4305: '=': truncation from 'double' to 'float'
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(32): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(33): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(34): warning C4305: '=': truncation from 'double' to 'float'
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(38): warning C4305: '=': truncation from 'double' to 'float'
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(39): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(35): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(36): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(40): warning C4305: '=': truncation from 'double' to 'float'
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(49): warning C4098: 'main': 'void' function returning a value
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(121): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(191): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(237): warning C4013: 'exit' undefined; assuming extern returning int
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(41): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(42): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(45): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(46): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(47): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(58): warning C4098: 'main': 'void' function returning a value
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(131): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(201): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(266): warning C4013: 'exit' undefined; assuming extern returning int
   Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\Debug\Project1.exe
   Project1.vcxproj -> D:\01_Omar\04_proyectos_para_pruebas\02_Micrux\03_visual_studio\01_proyecto_para_tests\Project1\Debug\Project1.pdb (Partial PDB)

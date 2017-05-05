@@ -5,6 +5,7 @@
 
 DF_CVTypeDef DF_CV;
 DF_LSVTypeDef DF_LSV;
+DF_SCVTypeDef DF_SCV;
 
 float LUT1[10001];						// Reservamos memoria para meter el máximo de puntos en el peor de los casos
 float LUT2[10001];
@@ -15,12 +16,13 @@ int32_t LUTDAC[31000];					// Tabla con datos convertidos a valor DAC
 
 
 
-void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2);
+void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3);
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
 void generateDACValues(float* lut, int32_t* data, uint32_t n);
 void generateCVsignal(DF_CVTypeDef df);
 void generateLSVsignal(DF_LSVTypeDef df);
+void generateSCVsignal(DF_SCVTypeDef df);
 
 void printFloatToFile(float* lut, uint32_t LUTsize);
 
@@ -39,8 +41,15 @@ void main() {
 	DF_LSV.Measurement.stop	= -4.3;
 	DF_LSV.Measurement.step = 0.3;
 
+	/* Datos SCV */
+	DF_SCV.Measurement.start = 1.1;
+	DF_SCV.Measurement.stop = -4.3;
+	DF_SCV.Measurement.step = 0.21;
+
+
+
 	/* Inicializamos la CV con los datos del USB */
-	Init(&DF_CV, &DF_LSV);
+	Init(&DF_CV, &DF_LSV, &DF_SCV);
 
 
 
@@ -56,7 +65,7 @@ void main() {
 * @param	Data from PC
 * @retval	None
 */
-void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2) {
+void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3) {
 	
 	
 	/* Configurar todos los relés y switches para seleccion de escalas, etc */
@@ -70,7 +79,8 @@ void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2) {
 
 	/* Generating LUTs */
 	//generateCVsignal(*df);
-	generateLSVsignal(*df2);
+	//generateLSVsignal(*df2);
+	generateSCVsignal(*df3);
 
 	/* Conversión de los valores de la LUT a datos para el DAC */
 	// TODO
@@ -221,6 +231,25 @@ void generateLSVsignal(DF_LSVTypeDef df) {
 	printFloatToFile(LUTcomplete, lengthLUT);
 }
 
+
+void generateSCVsignal(DF_SCVTypeDef df) {
+
+	uint32_t nSamples1 = generateRamp(df.Measurement.start, df.Measurement.stop, df.Measurement.step, LUT1);
+	uint32_t nSamples2 = generateRamp(df.Measurement.stop, df.Measurement.start, df.Measurement.step, LUT2);
+
+	/* Enviamos el último punto del período completo, que es el start */
+	// Usamos la misma función concatenateLUTs, pero como en este caso son dos tramos hacemos
+	// este truco y enviamos el último punto en la tercera LUT. Así no necesitamos definir
+	// otra función.
+	uint32_t nSamples3 = 1;
+	LUT3[0] = df.Measurement.start;
+
+	uint32_t lengthLUT = concatenateLUTs(LUT1, LUT2, LUT3, LUTcomplete, nSamples1, nSamples2, nSamples3);
+
+
+	/* TESTING */
+	printFloatToFile(LUTcomplete, lengthLUT);
+}
 
 
 /**
