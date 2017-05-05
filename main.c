@@ -3,7 +3,9 @@
 #include <stdio.h>
 
 
-DF_CVTypeDef USB_DF_Rx;
+DF_CVTypeDef DF_CV;
+DF_LSVTypeDef DF_LSV;
+
 float LUT1[10001];						// Reservamos memoria para meter el máximo de puntos en el peor de los casos
 float LUT2[10001];
 float LUT3[10001];
@@ -13,41 +15,32 @@ int32_t LUTDAC[31000];					// Tabla con datos convertidos a valor DAC
 
 
 
-void CV_Init(DF_CVTypeDef *USB_DF_Rx);
+void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2);
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
 void generateDACValues(float* lut, int32_t* data, uint32_t n);
+void generateCVsignal(DF_CVTypeDef df);
+void generateLSVsignal(DF_LSVTypeDef df);
 
-void printToFile(uint32_t* lut, uint32_t LUTsize);
+void printFloatToFile(float* lut, uint32_t LUTsize);
 
 
 void main() {
 
-	/* Generamos una trama de datos válida para simular la recepción desde el USB */
-	USB_DF_Rx.Header.init_1 = 'C';
-	USB_DF_Rx.Header.init_2 = 'O';
-	USB_DF_Rx.Header.init_3 = 'N';
+	/* Datos CV */
+	DF_CV.Measurement.start = 0.34;
+	DF_CV.Measurement.vtx1 = -0.4;
+	DF_CV.Measurement.vtx2 = 0.76;
+	DF_CV.Measurement.step = 0.01;
+	DF_CV.Measurement.sr = 1;
 
-	USB_DF_Rx.Pretreatment.exp = 0x01;
-	USB_DF_Rx.Pretreatment.rango = 0x01;
-	USB_DF_Rx.Pretreatment.high_gain = 0x01;
-	USB_DF_Rx.Pretreatment.cell_on = 0x01;
-	USB_DF_Rx.Pretreatment.tCond = 342.5;
-	USB_DF_Rx.Pretreatment.eCond = 0.003;
-	USB_DF_Rx.Pretreatment.tDep = 23;
-	USB_DF_Rx.Pretreatment.eDep = 0.012;
-	USB_DF_Rx.Pretreatment.tEq = 0.23;
-
-
-	USB_DF_Rx.Measurement.start = 1;
-	USB_DF_Rx.Measurement.vtx1 = 5;
-	USB_DF_Rx.Measurement.vtx2 = 3;
-	USB_DF_Rx.Measurement.step = 0.001;
-	USB_DF_Rx.Measurement.sr = 13;
-
+	/* Datos LSV */
+	DF_LSV.Measurement.start = 1.1;
+	DF_LSV.Measurement.stop	= -4.3;
+	DF_LSV.Measurement.step = 0.3;
 
 	/* Inicializamos la CV con los datos del USB */
-	CV_Init(&USB_DF_Rx);
+	Init(&DF_CV, &DF_LSV);
 
 
 
@@ -63,18 +56,21 @@ void main() {
 * @param	Data from PC
 * @retval	None
 */
-void CV_Init(DF_CVTypeDef* USB_DF_Rx) {
+void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2) {
 	
 	
 	/* Configurar todos los relés y switches para seleccion de escalas, etc */
 	// TODO
 
-	/* Crear la tabla de datos para la SDRAM */
-	uint32_t nSamples1 = generateRamp(USB_DF_Rx->Measurement.start, USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.step, LUT1);
-	uint32_t nSamples2 = generateRamp(USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.vtx2, USB_DF_Rx->Measurement.step, LUT2);
-	uint32_t nSamples3 = generateRamp(USB_DF_Rx->Measurement.vtx2, USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.step, LUT3);
+//	uint32_t nSamples1 = generateRamp(USB_DF_Rx->Measurement.start, USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.step, LUT1);
+//	uint32_t nSamples2 = generateRamp(USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.vtx2, USB_DF_Rx->Measurement.step, LUT2);
+//	uint32_t nSamples3 = generateRamp(USB_DF_Rx->Measurement.vtx2, USB_DF_Rx->Measurement.vtx1, USB_DF_Rx->Measurement.step, LUT3);
 
-	uint32_t lengthLUT = concatenateLUTs(LUT1, LUT2, LUT3, LUTcomplete, nSamples1, nSamples2, nSamples3);
+//	uint32_t lengthLUT = concatenateLUTs(LUT1, LUT2, LUT3, LUTcomplete, nSamples1, nSamples2, nSamples3);
+
+	/* Generating LUTs */
+	//generateCVsignal(*df);
+	generateLSVsignal(*df2);
 
 	/* Conversión de los valores de la LUT a datos para el DAC */
 	// TODO
@@ -87,7 +83,7 @@ void CV_Init(DF_CVTypeDef* USB_DF_Rx) {
 	//			+ Vout => tensión que queremos sacar por el DAC. Este es el valor que se guarda
 	//					en la LUT.
 	//			+ Vref => es la tensión de referencia que tiene el DAC conectada (en este caso 3.3VDC)
-	generateDACValues(LUTcomplete, LUTDAC, lengthLUT);
+	//generateDACValues(LUTcomplete, LUTDAC, lengthLUT);
 
 
 
@@ -102,7 +98,8 @@ void CV_Init(DF_CVTypeDef* USB_DF_Rx) {
 
 
 	/* Debugging to a txt file */
-	printToFile(LUTDAC, lengthLUT);
+	//printFloatToFile(LUTcomplete, lengthLUT);
+
 }
 
 
@@ -117,8 +114,11 @@ void CV_Init(DF_CVTypeDef* USB_DF_Rx) {
 */
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut) {
 
+	// TODO : si trabajamos con valores uint16_t directamente
+	// es necesario cambiar la función fabsf que devuelve un float
+	// a abs, que devuelve un int
 
-	uint32_t nSamples = ceil(abs(eStart - eStop) / eStep) + 1;					// Calculamos número de puntos...
+	uint32_t nSamples = ceil(fabsf(eStart - eStop) / eStep) + 1;				// Calculamos número de puntos...
 	lut[0] = eStart;															// Cargamos primer valor en LUT...
 
 	for (uint32_t i = 1; i < nSamples; i++) {
@@ -194,13 +194,42 @@ void generateDACValues(float* lut, int32_t* data, uint32_t n) {
 }
 
 
+/* FUNCTIONS FOR GENERATING SIGNALS LUT ---------------------------------------------------------------------- */
+void generateCVsignal(DF_CVTypeDef df) {
+
+	uint32_t nSamples1 = generateRamp(df.Measurement.start, df.Measurement.vtx1, df.Measurement.step, LUT1);
+	uint32_t nSamples2 = generateRamp(df.Measurement.vtx1, df.Measurement.vtx2, df.Measurement.step, LUT2);
+	uint32_t nSamples3 = generateRamp(df.Measurement.vtx2, df.Measurement.vtx1, df.Measurement.step, LUT3);
+
+	uint32_t lengthLUT = concatenateLUTs(LUT1, LUT2, LUT3, LUTcomplete, nSamples1, nSamples2, nSamples3);
+
+
+
+	/* TESTING */
+	printFloatToFile(LUTcomplete, lengthLUT);
+}
+
+
+void generateLSVsignal(DF_LSVTypeDef df) {
+	
+	uint32_t lengthLUT = generateRamp(df.Measurement.start, df.Measurement.stop, df.Measurement.step, LUTcomplete);
+
+	/* Escribimos el Estop en el último valor de la LUT */
+	LUTcomplete[lengthLUT-1] = df.Measurement.stop;
+
+	/* TESTING */
+	printFloatToFile(LUTcomplete, lengthLUT);
+}
+
+
+
 /**
 * @brief	Prints data to txt file (debugging purposes)
 * @param	Pointer to LUT containing data
 * @param	Size of the LUT
 * @retval	None
 */
-void printToFile(uint32_t* lut, uint32_t LUTsize) {
+void printFloatToFile(float* lut, uint32_t LUTsize) {
 
 	FILE *f = fopen("LUT.txt", "w");
 	if (f == NULL) {
@@ -209,7 +238,7 @@ void printToFile(uint32_t* lut, uint32_t LUTsize) {
 	}
 
 	for (uint32_t i = 0; i < LUTsize; i++) {
-		fprintf(f, "%d\n", lut[i]);
+		fprintf(f, "%f\n", lut[i]);
 	}
 
 	fclose(f);
