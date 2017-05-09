@@ -10,6 +10,7 @@ DF_DPVTypeDef DF_DPV;
 DF_NPVTypeDef DF_NPV;
 DF_DNPVTypeDef DF_DNPV;
 DF_SWVTypeDef DF_SWV;
+DF_ACTypeDef DF_ACV;
 
 float LUT1[10001];						// Reservamos memoria para meter el máximo de puntos en el peor de los casos
 float LUT2[10001];
@@ -21,7 +22,7 @@ int32_t LUTDAC[31000];					// Tabla con datos convertidos a valor DAC
 
 /* FUNCTIONS DEFINITION --------------------------------------------------------------------------- */
 void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDef* df4,\
-	DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7);
+	DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7, DF_ACTypeDef* df8);
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
 void generateDACValues(float* lut, int32_t* data, uint32_t n);
@@ -34,6 +35,7 @@ void generateDPVsignal(DF_DPVTypeDef df);
 void generateNPVsignal(DF_NPVTypeDef df);
 void generateDNPV(DF_DNPVTypeDef df);
 void generateSWV(DF_SWVTypeDef df);
+void generateACV(DF_ACTypeDef df);
 
 void printFloatToFile(float* lut, uint32_t LUTsize);
 
@@ -92,8 +94,17 @@ void main() {
 	DF_SWV.Measurement.amplitude = 0.12;
 	DF_SWV.Measurement.freq = 13;
 
+	/* ACV */
+	DF_ACV.Measurement.start = 2.21;
+	DF_ACV.Measurement.stop = -3.9;
+	DF_ACV.Measurement.step = 0.17;
+	DF_ACV.Measurement.ACamplitude = 0.04;
+	DF_ACV.Measurement.sr = 13;
+	DF_ACV.Measurement.freq = 600;
+
+
 	/* Generamos la señal */
-	Init(&DF_CV, &DF_LSV, &DF_SCV, &DF_DPV, &DF_NPV, &DF_DNPV, &DF_SWV);
+	Init(&DF_CV, &DF_LSV, &DF_SCV, &DF_DPV, &DF_NPV, &DF_DNPV, &DF_SWV, &DF_ACV);
 
 
 
@@ -110,7 +121,7 @@ void main() {
 * @retval	None
 */
 void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDef* df4, \
-		DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7) {
+		DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7, DF_ACTypeDef* df8) {
 	
 	
 	/* Configurar todos los relés y switches para seleccion de escalas, etc */
@@ -129,7 +140,8 @@ void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDe
 	//generateDPVsignal(*df4);
 	//generateNPVsignal(*df5);
 	//generateDNPV(*df6);
-	generateSWV(*df7);
+	//generateSWV(*df7);
+	generateACV(*df8);
 
 	/* Conversión de los valores de la LUT a datos para el DAC */
 	// TODO
@@ -616,6 +628,87 @@ void generateSWV(DF_SWVTypeDef df) {
 	printFloatToFile(LUTcomplete, contRow);
 }
 
+
+
+
+void generateACV(DF_ACTypeDef df) {
+
+	uint16_t i, j;
+
+	/* Sacamos samples totales conociendo la frecuencia */
+	float fSampling = df.Measurement.freq * 100;
+	float tTimer = 1 / fSampling;
+	float nSamplesAC = ceil((1 / df.Measurement.freq) / tTimer);
+
+	/* Calculamos el t interval */
+	float tInt = df.Measurement.step / df.Measurement.sr;
+
+	/* PASO 1 : generación de la senoide para todo el período */
+	/* Calculamos nº períodos AC que caben en t interval */
+	float nPerAC = tInt / (1 / df.Measurement.freq);
+
+	/* Esto nos da el nº de ptos totales del t interval */
+	float nSamplesTint = ceil(nPerAC * nSamplesAC);
+
+	/* Generamos la senoidal para todo el t int */
+	/* IMPORTANTE */
+	/* En caso de que el nº de períodos AC que caben en el t itnerval no sea
+	 un número entero, debemos de poder sacar los puntos del período incompleto.
+	 Esto se hace en la segunda parte del "if" */
+
+	uint32_t contRow = 0;
+
+	for (i = 0; i < ceil(nPerAC); i++) {
+
+		if (i < nPerAC) {						// Si no es el último período...
+			for (j = 0; j < nSamplesAC; j++) {
+
+				LUT1[j + contRow] = df.Measurement.ACamplitude * sin((2 * PI / nSamplesAC)*j);
+			}
+			contRow += j;
+		}
+		else {									// Si último período...
+
+			float nSamplesRest = nSamplesTint - contRow;
+
+			for (j = 0; j < nSamplesRest; j++) {
+
+				LUT1[j + contRow] = df.Measurement.ACamplitude * sin((2 * PI / nSamplesAC)*j);
+			}
+		}
+
+	}
+
+	/* Generación del offset + AC para toda la prueba */
+	float nSteps = ceil(abs((df.Measurement.start - df.Measurement.stop) / df.Measurement.step));
+
+	contRow = 0;
+
+	if (df.Measurement.start < df.Measurement.stop) {			// Si steps suben...
+		for (i = 0; i < nSteps; i++) {
+			for (j = 0; j < nSamplesTint; j++) {
+
+				LUTcomplete[j + contRow] = (df.Measurement.start + (df.Measurement.step*i)) + \
+					LUT1[j];
+			}
+			contRow += j;
+		}
+	}
+	else {														// Si steps bajan...
+		for (i = 0; i < nSteps; i++) {
+			for (j = 0; j < nSamplesTint; j++) {
+
+				LUTcomplete[j + contRow] = (df.Measurement.start - (df.Measurement.step*i)) + \
+					LUT1[j];
+			}
+			contRow += j;
+
+		}
+	}
+
+	/* TESTING */
+	printFloatToFile(LUTcomplete, contRow);
+}
 
 
 

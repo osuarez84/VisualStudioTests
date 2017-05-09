@@ -7,7 +7,7 @@
 
 #define		NBITSDAC	12
 #define		VREF		3.3
-
+#define		PI			3.14159
 
 /* Definición estructuras datos recibidas por el USB */
 typedef struct {
