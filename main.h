@@ -261,7 +261,7 @@ typedef struct {
 typedef struct {
 	DF_HEADER Header;
 	DF_PRETREATMENT_PAR Pretreatment;
-	DF_MEASUREMENT_PAR_DNPV;
+	DF_MEASUREMENT_PAR_DNPV Measurement;
 }DF_DNPVTypeDef;
 
 // SWV
