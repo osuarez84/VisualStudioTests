@@ -9,6 +9,7 @@ DF_SCVTypeDef DF_SCV;
 DF_DPVTypeDef DF_DPV;
 DF_NPVTypeDef DF_NPV;
 DF_DNPVTypeDef DF_DNPV;
+DF_SWVTypeDef DF_SWV;
 
 float LUT1[10001];						// Reservamos memoria para meter el máximo de puntos en el peor de los casos
 float LUT2[10001];
@@ -20,7 +21,7 @@ int32_t LUTDAC[31000];					// Tabla con datos convertidos a valor DAC
 
 /* FUNCTIONS DEFINITION --------------------------------------------------------------------------- */
 void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDef* df4,\
-	DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6);
+	DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7);
 uint32_t generateRamp(float eStart, float eStop, float eStep, float* lut);
 uint32_t concatenateLUTs(float* lut1, float* lut2, float* lut3, float* lutC, uint32_t n1, uint32_t n2, uint32_t n3);
 void generateDACValues(float* lut, int32_t* data, uint32_t n);
@@ -32,6 +33,7 @@ void generateSCVsignal(DF_SCVTypeDef df);
 void generateDPVsignal(DF_DPVTypeDef df);
 void generateNPVsignal(DF_NPVTypeDef df);
 void generateDNPV(DF_DNPVTypeDef df);
+void generateSWV(DF_SWVTypeDef df);
 
 void printFloatToFile(float* lut, uint32_t LUTsize);
 
@@ -83,9 +85,15 @@ void main() {
 	DF_DNPV.Measurement.tPulse2 = 0.002;
 	DF_DNPV.Measurement.sr = 14;
 
+	/* SWV */
+	DF_SWV.Measurement.start = 3.33;
+	DF_SWV.Measurement.stop = -4.60;
+	DF_SWV.Measurement.step = 0.13;
+	DF_SWV.Measurement.amplitude = 0.12;
+	DF_SWV.Measurement.freq = 13;
 
-	/* Inicializamos la CV con los datos del USB */
-	Init(&DF_CV, &DF_LSV, &DF_SCV, &DF_DPV, &DF_NPV, &DF_DNPV);
+	/* Generamos la señal */
+	Init(&DF_CV, &DF_LSV, &DF_SCV, &DF_DPV, &DF_NPV, &DF_DNPV, &DF_SWV);
 
 
 
@@ -102,7 +110,7 @@ void main() {
 * @retval	None
 */
 void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDef* df4, \
-		DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6) {
+		DF_NPVTypeDef* df5, DF_DNPVTypeDef* df6, DF_SWVTypeDef* df7) {
 	
 	
 	/* Configurar todos los relés y switches para seleccion de escalas, etc */
@@ -120,7 +128,8 @@ void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDe
 	//generateSCVsignal(*df3);
 	//generateDPVsignal(*df4);
 	//generateNPVsignal(*df5);
-	generateDNPV(*df6);
+	//generateDNPV(*df6);
+	generateSWV(*df7);
 
 	/* Conversión de los valores de la LUT a datos para el DAC */
 	// TODO
@@ -523,6 +532,89 @@ void generateDNPV(DF_DNPVTypeDef df) {
 	printFloatToFile(LUTcomplete, contRow);
 }
 
+
+
+
+void generateSWV(DF_SWVTypeDef df) {
+
+	uint16_t i, j;
+
+	/* Sacamos samples totales conociendo frecuencia */
+	float fSampling = 100 * df.Measurement.freq;		// oversampling...
+
+	/* Tiempo de disparo de cada sample */
+	float tTimer = 1 / df.Measurement.freq;
+
+
+	/* Calculamos el nº de steps */
+	uint32_t nSteps = abs((df.Measurement.start - df.Measurement.stop) / df.Measurement.step);
+
+	/* Hacemos la señal en dos pasos... */
+	/* PASO 1: generamos la onda cuadrada */
+	float nSamples1 = (1 / df.Measurement.freq) / tTimer;
+	float nSamples2 = (1 / df.Measurement.freq) / tTimer;
+
+	for (i = 0; i < nSamples1; i++) {				// Primer semiperíodo...
+
+		LUT1[i] = df.Measurement.amplitude;
+	}
+
+	for (i = 0; i < nSamples2; i++) {				// Segundo semiperíodo...
+
+		LUT2[i] = - (df.Measurement.amplitude);
+	}
+
+
+	/* PASO 2: generamos el DC offset */
+	uint32_t contRow = 0;
+
+	if (df.Measurement.start < df.Measurement.stop) {		// Si steps suben...
+
+		for (i = 0; i < nSteps; i++) {
+
+			for (j = 0; j < nSamples1; j++) {			// Generamos primer semiperíodo más parte DC
+
+				LUTcomplete[j + contRow] = (df.Measurement.start + df.Measurement.step * i) + \
+					LUT1[j];
+			}
+			contRow += j;
+
+			for (j = 0; j < nSamples2; j++) {			// Generamos segundo semiperíodo más parte DC
+
+				LUTcomplete[j + contRow] = (df.Measurement.start + df.Measurement.step * i) + \
+					LUT2[j];
+			}
+			contRow += j;
+		}
+
+	}
+
+	else {												// Si steps bajan...
+
+		for (i = 0; i < nSteps; i++) {
+
+			for (j = 0; j < nSamples1; j++) {			// Generamos primer semiperíodo más parte DC
+
+				LUTcomplete[j + contRow] = (df.Measurement.start - df.Measurement.step * i) + \
+					LUT1[j];
+			}
+			contRow += j;
+
+			for (j = 0; j < nSamples2; j++) {			// Generamos segundo semiperíodo más parte DC
+
+				LUTcomplete[j + contRow] = (df.Measurement.start - df.Measurement.step * i) + \
+					LUT2[j];
+			}
+			contRow += j;
+		}
+
+	}
+
+
+
+	/* TESTING */
+	printFloatToFile(LUTcomplete, contRow);
+}
 
 
 
