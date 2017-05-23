@@ -1,6 +1,5 @@
 ﻿  main.c
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(49): warning C4305: '=': truncation from 'double' to 'float'
-d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(50): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(51): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(52): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(56): warning C4305: '=': truncation from 'double' to 'float'
@@ -10,6 +9,7 @@ d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(62): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(63): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(66): warning C4305: '=': truncation from 'double' to 'float'
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(67): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(68): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(69): warning C4305: '=': truncation from 'double' to 'float'
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(70): warning C4305: '=': truncation from 'double' to 'float'
@@ -36,13 +36,17 @@ d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(262): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(335): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(331): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(335): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(413): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(410): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(413): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(484): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(475): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(478): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(481): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(484): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(562): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data
+d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(562): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(666): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(676): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 d:\01_omar\04_proyectos_para_pruebas\02_micrux\03_visual_studio\01_proyecto_para_tests\project1\main.c(683): warning C4244: 'function': conversion from 'float' to 'int', possible loss of data

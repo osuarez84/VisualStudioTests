@@ -46,9 +46,9 @@ void printFloatToFile(float* lut, uint32_t LUTsize);
 void main() {
 
 	/* Datos CV */
-	DF_CV.Measurement.start = 0.34;
-	DF_CV.Measurement.vtx1 = -0.4;
-	DF_CV.Measurement.vtx2 = 0.76;
+	DF_CV.Measurement.start = 1.4;//0.34;
+	DF_CV.Measurement.vtx1 = 1.5;//-0.4;
+	DF_CV.Measurement.vtx2 = 1.1;//0.76;
 	DF_CV.Measurement.step = 0.01;
 	DF_CV.Measurement.sr = 1;
 
@@ -64,23 +64,23 @@ void main() {
 
 	/* Datos DPV */
 	DF_DPV.Measurement.start = 0.2;
-	DF_DPV.Measurement.stop = -4;
+	DF_DPV.Measurement.stop = -1.3;
 	DF_DPV.Measurement.step = 0.1;
 	DF_DPV.Measurement.ePulse = 0.2;
-	DF_DPV.Measurement.tPulse = 0.0012;
+	DF_DPV.Measurement.tPulse = 0.012;
 	DF_DPV.Measurement.sr = 5;
 
 	/* Datos NPV */
 	DF_NPV.Measurement.start = 1.96;
-	DF_NPV.Measurement.stop = -4.66;
-	DF_NPV.Measurement.step = 0.1;
+	DF_NPV.Measurement.stop = -0.66;
+	DF_NPV.Measurement.step = 0.14;
 	DF_NPV.Measurement.tPulse = 0.002;
 	DF_NPV.Measurement.sr = 6;
 
 
 	/* DNPV */
 	DF_DNPV.Measurement.start = 1.26;
-	DF_DNPV.Measurement.stop = -2.88;
+	DF_DNPV.Measurement.stop = 2.88;
 	DF_DNPV.Measurement.step = 0.24;
 	DF_DNPV.Measurement.ePulse = 0.13;
 	DF_DNPV.Measurement.tPulse1 = 0.002;
@@ -139,9 +139,9 @@ void Init(DF_CVTypeDef* df, DF_LSVTypeDef* df2, DF_SCVTypeDef* df3, DF_DPVTypeDe
 	//generateSCVsignal(*df3);
 	//generateDPVsignal(*df4);
 	//generateNPVsignal(*df5);
-	//generateDNPV(*df6);
+	generateDNPV(*df6);
 	//generateSWV(*df7);
-	generateACV(*df8);
+	//generateACV(*df8);
 
 	/* Conversión de los valores de la LUT a datos para el DAC */
 	// TODO
@@ -332,7 +332,7 @@ void generateDPVsignal(DF_DPVTypeDef df) {
 
 	/* Calculamos el nº de steps */
 	// TODO
-	uint32_t nSteps = abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step);
+	uint32_t nSteps = ceil(abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step));
 
 	uint32_t contRow = 0;	// Lleva el seguimiento de la posición de la LUT 
 
@@ -340,7 +340,7 @@ void generateDPVsignal(DF_DPVTypeDef df) {
 	/* Generamos el patrón de señal */
 	if (df.Measurement.stop > df.Measurement.start) {		// Si steps suben...
 
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesDC; j++) {				// Generamos parte DC..
 				
 				LUTcomplete[j + contRow] = df.Measurement.start + (df.Measurement.step * (i));
@@ -362,7 +362,7 @@ void generateDPVsignal(DF_DPVTypeDef df) {
 
 	else {													// Si steps bajan...
 		
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesDC; j++) {				// Generamos parte DC..
 
 				LUTcomplete[j + contRow] = df.Measurement.start - (df.Measurement.step * (i));
@@ -410,14 +410,14 @@ void generateNPVsignal(DF_NPVTypeDef df) {
 	float nSamplesDC = ceil((tInt - df.Measurement.tPulse) / tTimer);
 
 	/* Calculamos el nº de steps */
-	uint32_t nSteps = abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step);
+	uint32_t nSteps = ceil(abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step));
 
 	uint32_t contRow = 0;
 
 	/* Generamos el patrón de señal */
 	if (df.Measurement.stop > df.Measurement.start) {			// Si step sube...
 
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesDC; j++) {					// Generamos parte DC...
 
 				LUTcomplete[j + contRow] = df.Measurement.start;
@@ -435,7 +435,7 @@ void generateNPVsignal(DF_NPVTypeDef df) {
 	
 	else {														// Si step baja...
 
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesDC; j++) {					// Generamos parte DC...
 
 				LUTcomplete[j + contRow] = df.Measurement.start;
@@ -481,13 +481,13 @@ void generateDNPV(DF_DNPVTypeDef df) {
 	float nSamplesP2 = ceil(df.Measurement.tPulse2 / tTimer);
 
 	/* Calculamos el nº de steps */
-	uint32_t nSteps = abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step);
+	uint32_t nSteps = ceil(abs((df.Measurement.stop - df.Measurement.start) / df.Measurement.step));
 
 	uint32_t contRow = 0;
 
 	/* Generamos el patrón de señal */
 	if (df.Measurement.stop > df.Measurement.start) {		// Si steps suben...
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 
 			for (j = 0; j < nSamplesDC; j++) {				// Generamos parte DC...
 
@@ -514,7 +514,7 @@ void generateDNPV(DF_DNPVTypeDef df) {
 	}
 
 	else {													// Si steps bajan...
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 
 			for (j = 0; j < nSamplesDC; j++) {				// Generamos parte DC...
 
@@ -559,7 +559,7 @@ void generateSWV(DF_SWVTypeDef df) {
 
 
 	/* Calculamos el nº de steps */
-	uint32_t nSteps = abs((df.Measurement.start - df.Measurement.stop) / df.Measurement.step);
+	uint32_t nSteps = ceil(abs((df.Measurement.start - df.Measurement.stop) / df.Measurement.step));
 
 	/* Hacemos la señal en dos pasos... */
 	/* PASO 1: generamos la onda cuadrada */
@@ -582,7 +582,7 @@ void generateSWV(DF_SWVTypeDef df) {
 
 	if (df.Measurement.start < df.Measurement.stop) {		// Si steps suben...
 
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 
 			for (j = 0; j < nSamples1; j++) {			// Generamos primer semiperíodo más parte DC
 
@@ -603,7 +603,7 @@ void generateSWV(DF_SWVTypeDef df) {
 
 	else {												// Si steps bajan...
 
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 
 			for (j = 0; j < nSamples1; j++) {			// Generamos primer semiperíodo más parte DC
 
@@ -685,7 +685,7 @@ void generateACV(DF_ACTypeDef df) {
 	contRow = 0;
 
 	if (df.Measurement.start < df.Measurement.stop) {			// Si steps suben...
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesTint; j++) {
 
 				LUTcomplete[j + contRow] = (df.Measurement.start + (df.Measurement.step*i)) + \
@@ -695,7 +695,7 @@ void generateACV(DF_ACTypeDef df) {
 		}
 	}
 	else {														// Si steps bajan...
-		for (i = 0; i < nSteps; i++) {
+		for (i = 0; i <= nSteps; i++) {
 			for (j = 0; j < nSamplesTint; j++) {
 
 				LUTcomplete[j + contRow] = (df.Measurement.start - (df.Measurement.step*i)) + \
