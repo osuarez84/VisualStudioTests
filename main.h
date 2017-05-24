@@ -9,6 +9,9 @@
 #define		VREF		3.3
 #define		PI			3.14159
 
+#define		NLEVELS		1000
+
+
 /* Definición estructuras datos recibidas por el USB */
 typedef struct {
 	char init_1;
@@ -156,11 +159,16 @@ typedef struct {
 // MSA (Multistep Amperometry)
 // TODO: hay que definir cuantos steps vamos a ser capaces de definir como mucho
 // para habilitar espacio de sobra en memoria para las variables
-/*
+
 typedef struct {
-	
-}DF_MEASUREMENT_PAR_MSA;
-*/
+	float tInt;
+	uint16_t cycles;
+	uint16_t levels;
+	float E[NLEVELS];			// Array para guardar los valores de E de cada step
+	float t[NLEVELS];			// Array para guardar los valores de t de cada step;
+
+}DF_MEASUREMENT_PAR_MSP;
+
 
 // HFP
 typedef struct {
@@ -307,6 +315,13 @@ typedef struct {
 	DF_PRETREATMENT_PAR Pretreatment;
 	DF_MEASUREMENT_PAR_DPA Measurement;
 }DF_DPATypeDef;
+
+// MSP
+typedef struct{
+	DF_HEADER Header;
+	DF_PRETREATMENT_PAR Pretreatment;
+	DF_MEASUREMENT_PAR_MSP Measurement;
+}DF_MSPTypeDef;
 
 // HFP
 typedef struct {
